@@ -13,19 +13,21 @@
         }
 
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --dark: #1a1a2e;
+            --primary: #1a1a1a;
+            --secondary: #2d2d2d;
+            --accent: #00d9ff;
+            --accent-hover: #00b8d4;
+            --dark: #0a0a0a;
             --light: #ffffff;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-secondary: #a0a0a0;
+            --glass: rgba(30, 30, 30, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -34,7 +36,6 @@
             position: relative;
         }
 
-        /* Partículas de fondo */
         #particles-canvas {
             position: fixed;
             top: 0;
@@ -42,10 +43,9 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.3;
+            opacity: 0.15;
         }
 
-        /* Tarjeta Principal */
         .digital-card {
             width: 100%;
             max-width: 450px;
@@ -54,7 +54,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 30px;
             padding: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
             animation: cardFloat 6s ease-in-out infinite;
@@ -72,8 +72,8 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            opacity: 0.1;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0.3;
             animation: rotate 20s linear infinite;
         }
 
@@ -82,7 +82,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Header */
         .card-header {
             text-align: center;
             margin-bottom: 25px;
@@ -91,103 +90,57 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--light);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
 
+        .logo i {
+            color: var(--accent);
+        }
+
         .tagline {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        /* Hero Compacto */
-        .hero-compact {
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-compact h1 {
-            font-size: 1.6rem;
-            color: var(--light);
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-compact p {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            line-height: 1.4;
+            line-height: 1.5;
+            max-width: 90%;
+            margin: 0 auto;
         }
 
-        /* Cursos Principales */
-        .main-courses {
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .main-courses h3 {
-            color: var(--light);
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .main-courses-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .main-course-item {
-            background: rgba(255, 255, 255, 0.05);
+        .stats-compact {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0 25px 0;
+            padding: 10px 8px;
+            background: rgba(0, 217, 255, 0.05);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px 10px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .main-course-item:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .main-course-icon {
-            font-size: 1.8rem;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .main-course-title {
-            color: var(--light);
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .main-course-price {
-            color: var(--accent);
-            font-size: 0.9rem;
+        .stat-number {
+            font-size: 1.1rem;
             font-weight: bold;
-            margin-top: 5px;
+            color: var(--accent);
         }
 
-        /* Slider de Cursos */
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
         .courses-slider-container {
             margin-bottom: 25px;
             position: relative;
@@ -204,6 +157,13 @@
         .courses-slider-header h3 {
             color: var(--light);
             font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .courses-slider-header h3 i {
+            color: var(--accent);
         }
 
         .slider-controls {
@@ -212,13 +172,12 @@
         }
 
         .slider-btn {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--light);
+            background: var(--secondary);
+            border: 1px solid var(--glass-border);
+            color: var(--accent);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -227,7 +186,8 @@
         }
 
         .slider-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--accent);
+            color: var(--dark);
             transform: scale(1.1);
         }
 
@@ -247,84 +207,174 @@
         }
 
         .course-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--secondary);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .course-card:hover {
             transform: scale(1.02);
-            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
         }
 
         .course-header {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .course-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--accent);
         }
 
         .course-info h4 {
             color: var(--light);
-            font-size: 1rem;
-            margin-bottom: 3px;
+            font-size: 1.05rem;
+            margin-bottom: 5px;
         }
 
         .course-price {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
         }
 
         .course-description {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-secondary);
             font-size: 0.85rem;
-            line-height: 1.4;
-            margin-bottom: 10px;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
         .course-features {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 15px;
         }
 
         .feature-tag {
-            background: rgba(240, 147, 251, 0.2);
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.2);
             color: var(--accent);
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 10px;
             font-size: 0.75rem;
         }
 
         .course-action {
             width: 100%;
-            padding: 8px;
-            background: linear-gradient(45deg, var(--accent), var(--primary));
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
             border: none;
-            border-radius: 10px;
-            color: var(--light);
-            font-size: 0.9rem;
+            border-radius: 12px;
+            color: var(--dark);
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .course-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.4);
         }
 
-        /* Redes Sociales Compactas */
+        .digital-products-btn {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        /* Star Border Button Styles */
+        .star-border-container {
+            display: inline-block;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .border-gradient-bottom {
+            position: absolute;
+            width: 300%;
+            height: 50%;
+            opacity: 0.7;
+            bottom: -12px;
+            right: -250%;
+            border-radius: 50%;
+            animation: star-movement-bottom linear infinite alternate;
+            z-index: 0;
+        }
+
+        .border-gradient-top {
+            position: absolute;
+            opacity: 0.7;
+            width: 300%;
+            height: 50%;
+            top: -12px;
+            left: -250%;
+            border-radius: 50%;
+            animation: star-movement-top linear infinite alternate;
+            z-index: 0;
+        }
+
+        .inner-content {
+            position: relative;
+            border: 1px solid #333;
+            background: var(--secondary);
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px 26px;
+            border-radius: 20px;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .inner-content:hover {
+            background: rgba(45, 45, 45, 0.8);
+        }
+
+        @keyframes star-movement-bottom {
+            0% {
+                transform: translate(0%, 0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-100%, 0%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes star-movement-top {
+            0% {
+                transform: translate(0%, 0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100%, 0%);
+                opacity: 0;
+            }
+        }
+
         .social-section {
             margin-bottom: 20px;
             position: relative;
@@ -336,19 +386,27 @@
             font-size: 1.1rem;
             margin-bottom: 15px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .social-section h3 i {
+            color: var(--accent);
         }
 
         .social-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
 
         .social-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--secondary);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
             padding: 12px 8px;
             text-decoration: none;
             color: var(--light);
@@ -356,7 +414,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             position: relative;
             overflow: hidden;
         }
@@ -375,35 +433,34 @@
         }
 
         .social-btn:hover::after {
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
         }
 
         .social-btn:hover {
             transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.2);
         }
 
         .social-icon {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             z-index: 1;
             position: relative;
         }
 
         .social-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             z-index: 1;
             position: relative;
+            color: var(--text-secondary);
         }
 
         .instagram { color: #E4405F; }
         .whatsapp { color: #25D366; }
         .facebook { color: #1877F2; }
-        .tiktok { color: #000000; }
-        .hotmart { color: #FF6B35; }
-        .web { color: #4CAF50; }
+        .tiktok { color: var(--light); }
 
-        /* CTA Final */
         .cta-section {
             text-align: center;
             position: relative;
@@ -412,100 +469,162 @@
 
         .cta-btn {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(45deg, var(--accent), var(--primary));
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
             border: none;
             border-radius: 15px;
-            color: var(--light);
-            font-size: 1rem;
+            color: var(--dark);
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .cta-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 217, 255, 0.4);
         }
 
-        /* Stats Compactas */
-        .stats-compact {
+        /* Star Border Button Styles */
+        .star-border-container {
+            display: inline-block;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .border-gradient-bottom {
+            position: absolute;
+            width: 300%;
+            height: 50%;
+            opacity: 0.7;
+            bottom: -12px;
+            right: -250%;
+            border-radius: 50%;
+            animation: star-movement-bottom linear infinite alternate;
+            z-index: 0;
+        }
+
+        .border-gradient-top {
+            position: absolute;
+            opacity: 0.7;
+            width: 300%;
+            height: 50%;
+            top: -12px;
+            left: -250%;
+            border-radius: 50%;
+            animation: star-movement-top linear infinite alternate;
+            z-index: 0;
+        }
+
+        .inner-content {
+            position: relative;
+            border: 1px solid #333;
+            background: var(--secondary);
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px 26px;
+            border-radius: 20px;
+            z-index: 1;
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .inner-content:hover {
+            background: rgba(45, 45, 45, 0.8);
+        }
+
+        @keyframes star-movement-bottom {
+            0% {
+                transform: translate(0%, 0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-100%, 0%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes star-movement-top {
+            0% {
+                transform: translate(0%, 0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100%, 0%);
+                opacity: 0;
+            }
+        }
+
+        .digital-products-btn {
             position: relative;
             z-index: 1;
         }
 
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Indicadores del slider */
         .slider-indicators {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .indicator {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .indicator.active {
             background: var(--accent);
-            width: 20px;
+            width: 24px;
             border-radius: 4px;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .digital-card {
                 padding: 20px;
             }
             
-            .main-courses-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .social-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .social-btn {
+                padding: 14px 10px;
+            }
+            
+            .social-icon {
+                font-size: 1.6rem;
+            }
+            
+            .social-label {
+                font-size: 0.75rem;
             }
         }
 
-        /* Loading */
         .loader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -521,8 +640,8 @@
         .loader-circle {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: var(--light);
+            border: 3px solid rgba(0, 217, 255, 0.2);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -533,32 +652,32 @@
     </style>
 </head>
 <body>
-    <!-- Loader -->
     <div class="loader" id="loader">
         <div class="loader-circle"></div>
     </div>
 
-    <!-- Canvas Partículas -->
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Tarjeta Digital Principal -->
     <div class="digital-card">
-        <!-- Header -->
         <div class="card-header">
             <div class="logo">
                 <i class="fas fa-chart-line"></i>
-                Freedom Finance
+                Gabora646
             </div>
-            <p class="tagline">Tu camino hacia la libertad financiera</p>
+            <p class="tagline">Aprende las estrategias probadas para alcanzar la independencia económica</p>
         </div>
 
-        <!-- Hero Compacto -->
-        <div class="hero-compact">
-            <h1>Transforma tu Futuro</h1>
-            <p>Aprende las estrategias probadas para alcanzar la independencia económica</p>
+        <div class="digital-products-btn">
+            <div class="star-border-container" onclick="window.open('https://wa.me/c/584228745777', '_blank')" style="padding: 1px 0;">
+                <div class="border-gradient-bottom" style="background: radial-gradient(circle, #00d9ff, transparent 10%); animation-duration: 5s;"></div>
+                <div class="border-gradient-top" style="background: radial-gradient(circle, #00d9ff, transparent 10%); animation-duration: 5s;"></div>
+                <div class="inner-content">
+                    <i class="fas fa-box-open"></i>
+                    Productos Digitales
+                </div>
+            </div>
         </div>
 
-        <!-- Stats Compactas -->
         <div class="stats-compact">
             <div class="stat-item">
                 <div class="stat-number" data-target="5000">0</div>
@@ -574,32 +693,12 @@
             </div>
         </div>
 
-        <!-- Cursos Principales -->
-        <div class="main-courses">
-            <h3>⭐ Cursos Destacados</h3>
-            <div class="main-courses-grid">
-                <div class="main-course-item" onclick="openCourse('basico')">
-                    <i class="fas fa-seedling main-course-icon"></i>
-                    <div class="main-course-title">Básico</div>
-                    <div class="main-course-price">$47</div>
-                </div>
-                <div class="main-course-item" onclick="openCourse('intermedio')">
-                    <i class="fas fa-chart-line main-course-icon"></i>
-                    <div class="main-course-title">Intermedio</div>
-                    <div class="main-course-price">$97</div>
-                </div>
-                <div class="main-course-item" onclick="openCourse('avanzado')">
-                    <i class="fas fa-crown main-course-icon"></i>
-                    <div class="main-course-title">Avanzado</div>
-                    <div class="main-course-price">$297</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slider de Cursos -->
         <div class="courses-slider-container">
             <div class="courses-slider-header">
-                <h3>📚 Todos los Cursos</h3>
+                <h3>
+                    <i class="fas fa-graduation-cap"></i>
+                    Todos los Cursos
+                </h3>
                 <div class="slider-controls">
                     <button class="slider-btn" onclick="prevSlide()">
                         <i class="fas fa-chevron-left"></i>
@@ -611,169 +710,121 @@
             </div>
             <div class="courses-slider">
                 <div class="courses-track" id="coursesTrack">
-                    <!-- Los cursos se generarán dinámicamente -->
                 </div>
             </div>
             <div class="slider-indicators" id="sliderIndicators">
-                <!-- Los indicadores se generarán dinámicamente -->
             </div>
         </div>
 
-        <!-- Redes Sociales -->
         <div class="social-section">
-            <h3>🌐 Conecta con Nosotros</h3>
+            <h3>
+                <i class="fas fa-share-nodes"></i>
+                Conecta con Nosotros
+            </h3>
             <div class="social-grid">
-                <a href="https://instagram.com" target="_blank" class="social-btn">
-                    <i class="fab fa-instagram social-icon instagram"></i>
-                    <span class="social-label">Instagram</span>
-                </a>
-                <a href="https://wa.me/1234567890" target="_blank" class="social-btn">
+                <a href="https://wa.me/584228745777" target="_blank" class="social-btn">
                     <i class="fab fa-whatsapp social-icon whatsapp"></i>
                     <span class="social-label">WhatsApp</span>
                 </a>
-                <a href="https://facebook.com" target="_blank" class="social-btn">
+                <a href="https://www.facebook.com/gaborangel646" target="_blank" class="social-btn">
                     <i class="fab fa-facebook social-icon facebook"></i>
                     <span class="social-label">Facebook</span>
                 </a>
-                <a href="https://tiktok.com" target="_blank" class="social-btn">
+                <a href="https://www.instagram.com/gabora646/" target="_blank" class="social-btn">
+                    <i class="fab fa-instagram social-icon instagram"></i>
+                    <span class="social-label">Instagram</span>
+                </a>
+                <a href="https://www.tiktok.com/@gabora646" target="_blank" class="social-btn">
                     <i class="fab fa-tiktok social-icon tiktok"></i>
                     <span class="social-label">TikTok</span>
                 </a>
-                <a href="https://hotmart.com" target="_blank" class="social-btn">
-                    <i class="fas fa-shopping-bag social-icon hotmart"></i>
-                    <span class="social-label">Hotmart</span>
-                </a>
-                <a href="#" target="_blank" class="social-btn">
-                    <i class="fas fa-globe social-icon web"></i>
-                    <span class="social-label">Web</span>
-                </a>
             </div>
-        </div>
-
-        <!-- CTA Final -->
-        <div class="cta-section">
-            <button class="cta-btn" onclick="startJourney()">
-                <i class="fas fa-rocket"></i>
-                Comenzar mi Viaje Ahora
-            </button>
         </div>
     </div>
 
     <script>
-        // Base de datos de cursos (fácilmente modificable)
         const coursesDatabase = [
             {
                 id: 1,
-                title: "Introducción a las Finanzas",
+                title: "Camino al Primer Millón",
                 price: "$47",
-                icon: "fas fa-piggy-bank",
-                description: "Aprende los fundamentos básicos para manejar tu dinero",
-                features: ["5 módulos", "Certificado", "Acceso vitalicio"],
-                hotmartUrl: "https://hotmart.com/course1"
+                icon: "fas fa-road",
+                description: "Descubre 10 negocios rentables para tu éxito financiero y transforma tus finanzas",
+                features: ["Ebook exclusivo", "Plan de acción", "Plantilla financiera"],
+                hotmartUrl: "https://go.hotmart.com/G102721289A"
             },
             {
                 id: 2,
-                title: "Inversión en Bolsa",
+                title: "Estrategias de Inversión",
                 price: "$97",
                 icon: "fas fa-chart-line",
-                description: "Domina el mercado de valores y genera pasivos",
-                features: ["10 módulos", "Trading real", "Mentoría"],
-                hotmartUrl: "https://hotmart.com/course2"
+                description: "Aprende técnicas avanzadas para multiplicar tu capital con inversiones inteligentes",
+                features: ["Análisis técnico", "Gestión de riesgo", "Casos reales"],
+                hotmartUrl: "https://go.hotmart.com/A102721287E"
             },
             {
                 id: 3,
-                title: "Criptomonedas 101",
-                price: "$67",
-                icon: "fab fa-bitcoin",
-                description: "Todo sobre Bitcoin, Ethereum y altcoins",
-                features: ["8 módulos", "Wallet guide", "Análisis técnico"],
-                hotmartUrl: "https://hotmart.com/course3"
+                title: "Educación Financiera para Niños",
+                price: "$37",
+                icon: "fas fa-child",
+                description: "Curso de 7 días para enseñar finanzas a los más pequeños de la casa",
+                features: ["7 módulos diarios", "Actividades interactivas", "Guía para padres"],
+                hotmartUrl: "https://go.hotmart.com/L102721297M"
             },
             {
                 id: 4,
-                title: "Bienes Raíces",
-                price: "$147",
-                icon: "fas fa-home",
-                description: "Invierte en propiedades y genera renta pasiva",
-                features: ["12 módulos", "Casos reales", "Contratos"],
-                hotmartUrl: "https://hotmart.com/course4"
+                title: "Independencia Financiera Mentoring",
+                price: "$297",
+                icon: "fas fa-trophy",
+                description: "Programa completo con mentoría personalizada para alcanzar tu libertad financiera",
+                features: ["Acompañamiento continuo", "Estrategias probadas", "Comunidad exclusiva"],
+                hotmartUrl: "https://go.hotmart.com/F102721278V"
             },
             {
                 id: 5,
-                title: "Marketing Digital",
-                price: "$87",
-                icon: "fas fa-bullhorn",
-                description: "Crea tu negocio online desde cero",
-                features: ["9 módulos", "Funnel building", "Ads mastery"],
-                hotmartUrl: "https://hotmart.com/course5"
+                title: "Finanzas Personales Avanzadas",
+                price: "$67",
+                icon: "fas fa-wallet",
+                description: "Domina el control de tus finanzas personales y multiplica tu patrimonio",
+                features: ["Presupuesto maestro", "Ahorro inteligente", "Inversión básica"],
+                hotmartUrl: "https://go.hotmart.com/P102802168A"
             },
             {
                 id: 6,
-                title: "Trading Profesional",
-                price: "$197",
+                title: "Trading y Mercados Financieros",
+                price: "$147",
                 icon: "fas fa-chart-bar",
-                description: "Estrategias avanzadas para traders",
-                features: ["15 módulos", "Live trading", "PSI"],
-                hotmartUrl: "https://hotmart.com/course6"
+                description: "Aprende a operar en los mercados como un profesional con estrategias ganadoras",
+                features: ["Trading en vivo", "Indicadores técnicos", "Psicología del trader"],
+                hotmartUrl: "https://go.hotmart.com/X102802160F"
             },
             {
                 id: 7,
-                title: "Mindset Millonario",
-                price: "$37",
-                icon: "fas fa-brain",
-                description: "Reprograma tu mente para el éxito",
-                features: ["6 módulos", "Meditaciones", "Ejercicios"],
-                hotmartUrl: "https://hotmart.com/course7"
-            },
-            {
-                id: 8,
-                title: "Dropshipping Pro",
-                price: "$77",
-                icon: "fas fa-shopping-cart",
-                description: "Monta tu tienda online sin inventario",
-                features: ["7 módulos", "Suppliers", "Automation"],
-                hotmartUrl: "https://hotmart.com/course8"
-            },
-            {
-                id: 9,
-                title: "Forex Mastery",
-                price: "$127",
-                icon: "fas fa-dollar-sign",
-                description: "Domina el mercado de divisas",
-                features: ["11 módulos", "Risk management", "Signals"],
-                hotmartUrl: "https://hotmart.com/course9"
-            },
-            {
-                id: 10,
-                title: "Pasivos Digitales",
+                title: "Finanzas para Niños - Completo",
                 price: "$57",
-                icon: "fas fa-laptop-code",
-                description: "Crea ingresos automáticos online",
-                features: ["8 módulos", "SaaS", "Affiliate"],
-                hotmartUrl: "https://hotmart.com/course10"
+                icon: "fas fa-graduation-cap",
+                description: "Programa interactivo completo para enseñar el valor del dinero a tus hijos",
+                features: ["4 módulos completos", "2 bonos incluidos", "Juegos prácticos"],
+                hotmartUrl: "https://go.hotmart.com/F102721304V"
             }
         ];
 
         let currentSlide = 0;
 
-        // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
             initializeSlider();
             initializeParticles();
             animateCounters();
             
-            // Ocultar loader
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
             }, 1000);
         });
 
-        // Inicializar slider
         function initializeSlider() {
             const track = document.getElementById('coursesTrack');
             const indicators = document.getElementById('sliderIndicators');
             
-            // Generar slides
             coursesDatabase.forEach((course, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'course-slide';
@@ -797,7 +848,6 @@
                 `;
                 track.appendChild(slide);
                 
-                // Generar indicador
                 const indicator = document.createElement('div');
                 indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
                 indicator.onclick = () => goToSlide(index);
@@ -805,7 +855,6 @@
             });
         }
 
-        // Navegación del slider
         function updateSlider() {
             const track = document.getElementById('coursesTrack');
             const indicators = document.querySelectorAll('.indicator');
@@ -832,10 +881,8 @@
             updateSlider();
         }
 
-        // Auto-slide
         setInterval(nextSlide, 5000);
 
-        // Partículas
         function initializeParticles() {
             const canvas = document.getElementById('particles-canvas');
             const ctx = canvas.getContext('2d');
@@ -865,7 +912,7 @@
                 }
 
                 draw() {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.4})`;
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                     ctx.fill();
@@ -900,7 +947,6 @@
             });
         }
 
-        // Contadores animados
         function animateCounters() {
             const counters = document.querySelectorAll('.stat-number');
             const speed = 200;
@@ -920,18 +966,7 @@
                 });
             };
 
-            // Iniciar después de un pequeño retraso
             setTimeout(countUp, 1500);
-        }
-
-        // Funciones de interacción
-        function openCourse(type) {
-            const courseMap = {
-                'basico': 0,
-                'intermedio': 1,
-                'avanzado': 2
-            };
-            goToSlide(courseMap[type]);
         }
 
         function buyCourse(courseId) {
@@ -941,18 +976,6 @@
             }
         }
 
-        function startJourney() {
-            // Animación de la tarjeta
-            const card = document.querySelector('.digital-card');
-            card.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                card.style.transform = 'scale(1)';
-                // Scroll al primer curso
-                goToSlide(0);
-            }, 200);
-        }
-
-        // Efectos táctiles para móvil
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -974,14 +997,13 @@
             }
         }
 
-        // Efecto de brillo en hover
-        document.querySelectorAll('.course-card, .main-course-item, .social-btn').forEach(element => {
+        document.querySelectorAll('.course-card, .social-btn').forEach(element => {
             element.addEventListener('mouseenter', function(e) {
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 
-                this.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05))`;
+                this.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 217, 255, 0.15), var(--secondary))`;
             });
             
             element.addEventListener('mouseleave', function() {

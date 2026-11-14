@@ -211,6 +211,36 @@
     }
     .course:hover { border-color: rgba(0, 229, 255, .5); box-shadow: 0 0 34px rgba(0, 229, 255, .16), inset 0 0 30px rgba(0, 229, 255, .05); }
 
+    /* contenedor para decidir con la altura REAL de la tarjeta si hay sitio para la imagen */
+    .course { container-type: size; }
+
+    /* ---------- Imagen del curso (solo cuando hay altura: escritorio / tablet) ---------- */
+    .media {
+      display: none; flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; border-radius: 16px; isolation: isolate;
+      border: 1px solid rgba(0, 229, 255, .2);
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 229, 255, .16), transparent 55%), linear-gradient(160deg, rgba(59, 108, 255, .18), rgba(5, 12, 22, .9));
+      box-shadow: inset 0 0 40px rgba(0, 229, 255, .06);
+    }
+    .mbg, .mfg { position: absolute; opacity: 0; transition: opacity .6s ease, transform .8s var(--ease); }
+    .mbg { inset: -12%; width: 124%; height: 124%; object-fit: cover; filter: blur(22px) saturate(1.5) brightness(.65); z-index: -2; }
+    .mfg { inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 10px; filter: drop-shadow(0 12px 26px rgba(0, 0, 0, .55)); }
+    .media.ready .mbg { opacity: .9; }
+    .media.ready .mfg { opacity: 1; }
+    .course:hover .media.ready .mfg { transform: scale(1.035); }
+    .media.loading::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(125, 243, 255, .12) 50%, transparent 80%); background-size: 220% 100%; animation: skel 1.3s linear infinite; }
+    @keyframes skel { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+    /* respaldo decorativo: curso sin imagen o imagen que no carga */
+    .art { position: absolute; inset: 0; display: grid; place-items: center; color: var(--cyan); transition: opacity .4s; }
+    .art::before { content: ''; position: absolute; width: min(70%, 220px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(0, 229, 255, .3), transparent 68%); animation: breathe 4.5s ease-in-out infinite; }
+    .art::after { content: ''; position: absolute; width: min(46%, 150px); aspect-ratio: 1; border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .35); animation: rot 24s linear infinite; }
+    .art svg { position: relative; z-index: 1; width: clamp(40px, 28%, 78px); height: auto; aspect-ratio: 1; filter: drop-shadow(0 0 14px rgba(0, 229, 255, .9)); }
+    @keyframes rot { to { transform: rotate(360deg); } }
+    .media.ready .art { opacity: 0; pointer-events: none; }
+    @container (min-height: 430px) {
+      .course .media { display: block; }
+      .course .c-desc { flex: none; -webkit-line-clamp: 3; }
+    }
+
     .c-top { flex: none; display: flex; align-items: center; gap: 12px; }
     .c-ico {
       flex: none; width: clamp(42px, 6.4dvh, 54px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 16px;
@@ -434,6 +464,20 @@
     }
 
     /* ---------- cursos ---------- */
+    /* Imagen del curso con respaldo: si falta o no carga, queda el arte con el icono */
+    function mediaFor(c) {
+      var m = h('div', { 'class': 'media' }, [h('div', { 'class': 'art', html: G.icon(c.icono), 'aria-hidden': 'true' })]);
+      if (!c.imagen) return m;
+      m.classList.add('loading');
+      var bg = h('img', { 'class': 'mbg', alt: '', 'aria-hidden': 'true', decoding: 'async', referrerpolicy: 'no-referrer' });
+      var fg = h('img', { 'class': 'mfg', alt: 'Imagen de ' + c.titulo, decoding: 'async', referrerpolicy: 'no-referrer' });
+      fg.onload = function () { m.classList.remove('loading'); m.classList.add('ready'); };
+      fg.onerror = function () { m.classList.remove('loading'); bg.remove(); fg.remove(); };
+      m.insertBefore(bg, m.firstChild); m.insertBefore(fg, m.firstChild);
+      bg.src = c.imagen; fg.src = c.imagen;
+      return m;
+    }
+
     function slideFor(c) {
       var tags = h('div', { 'class': 'tags' }, c.etiquetas.map(function (t) {
         return h('span', { 'class': 'tag' }, [h('i', { html: G.icon('check'), style: 'display:contents' }), document.createTextNode(t)]);
@@ -451,6 +495,7 @@
           h('div', { 'class': 'c-title' }, [h('h3', { text: c.titulo })]),
           c.precio ? h('div', { 'class': 'price', text: c.precio }) : null
         ]),
+        mediaFor(c),
         h('p', { 'class': 'c-desc', text: c.descripcion }),
         c.etiquetas.length ? tags : null,
         buy

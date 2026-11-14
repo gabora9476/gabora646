@@ -49,6 +49,20 @@ por tu ID, por ejemplo `BIN_ID: '66f1a2b3ad19ca34f8c1d2e3'`.
 3. Con los interruptores puedes ocultar un curso sin borrarlo; con las flechas cambias el orden.
 4. Pulsa **Guardar cambios** (o `Ctrl+S`). La tarjeta se actualiza al recargarla.
 
+## Imágenes de los cursos
+
+En escritorio y tablet cada curso muestra su imagen en el espacio central de la tarjeta (en móvil se oculta para que todo quepa sin scroll). Si un curso no tiene imagen, o el enlace falla, se muestra un arte neón con el icono del curso.
+
+En el editor de cada curso, campo **Imagen del curso**, tienes dos formas:
+
+- **Pegar un enlace.** En Hotmart: clic derecho sobre la imagen del producto → *Copiar dirección de imagen* y pégala. (La detección automática desde el enlace `go.hotmart.com` no es posible desde un navegador, por eso se pega el enlace de la imagen.)
+- **Subir un archivo (imgbb).** Pulsa *Subir imagen* (o arrastra el archivo). La imagen se reduce a ~1000 px y se aloja en imgbb; el enlace se rellena solo.
+  1. Crea tu API key gratis en https://api.imgbb.com/
+  2. El panel te la pide la primera vez (también puedes guardarla en **Ajustes → Subida de imágenes**).
+  3. La key se guarda solo en tu navegador; **no** va en el bin ni en `index.html`.
+
+Consejo: usa imágenes cuadradas o 16:9 de al menos 600 px de lado. Si pegas el enlace de Hotmart con `300x300` se verá más suave que una imagen subida; si quieres máxima nitidez, descarga la imagen y súbela con imgbb.
+
 En **Ajustes** editas el enlace de "Productos Digitales" y las 3 cifras (Estudiantes, Satisfacción, Cursos).
 En **Datos** puedes copiar el ID, exportar/importar copia de seguridad y restaurar los cursos originales.
 
@@ -60,7 +74,7 @@ En **Datos** puedes copiar el ID, exportar/importar copia de seguridad y restaur
   "ajustes": { "productosUrl": "https://…", "stats": [ { "valor": 5000, "sufijo": "+", "etiqueta": "Estudiantes" } ] },
   "cursos": [
     { "id": "c1", "titulo": "…", "precio": "$47", "icono": "road", "descripcion": "…",
-      "etiquetas": ["…"], "url": "https://go.hotmart.com/…", "insignia": "", "activo": true }
+      "etiquetas": ["…"], "url": "https://go.hotmart.com/…", "imagen": "https://…/imagen.webp", "insignia": "", "activo": true }
   ]
 }
 ```
@@ -70,6 +84,7 @@ Iconos disponibles: road, trending-up, smile, trophy, wallet, bar-chart, graduat
 ## Seguridad
 
 - Tu Master Key permite **leer, editar y borrar** todos tus bins. Si la compartiste en algún chat, considera regenerarla en jsonbin.io → *API Keys*.
+- Tu API key de imgbb solo permite subir imágenes a tu cuenta, pero igual guárdala en privado.
 - Mejor aún: crea una **Access Key** con permisos solo de Create/Read/Update y úsala en el panel en lugar de la Master Key.
 - `admin.html` lleva `noindex`, pero no es secreto por sí mismo: la protección real es tu clave. Si quieres, renómbralo a algo no obvio.
 

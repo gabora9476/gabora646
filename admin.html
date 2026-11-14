@@ -137,6 +137,18 @@
     .modal header h3 { font: 600 1.1rem/1 var(--font-display); }
     .modal .body { padding: 18px 20px; overflow: auto; display: grid; gap: 14px; }
     .modal footer { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); }
+    .imgrow { display: grid; grid-template-columns: 132px 1fr; gap: 14px; align-items: start; }
+    .imgprev { position: relative; aspect-ratio: 1; border-radius: 16px; border: 1px dashed rgba(0, 229, 255, .4); background: var(--field); display: grid; place-items: center; color: var(--cyan); cursor: pointer; overflow: hidden; transition: all .25s var(--ease); }
+    .imgprev:hover, .imgprev:focus-visible, .imgprev.drag { border-color: var(--cyan); background: rgba(0, 229, 255, .08); box-shadow: 0 0 22px rgba(0, 229, 255, .25); outline: none; }
+    .imgprev svg { width: 28px; height: 28px; opacity: .85; }
+    .imgprev img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .imgprev.busy::after { content: ''; position: absolute; inset: 0; background: rgba(3, 6, 12, .6); }
+    .imgprev.busy::before { content: ''; position: absolute; z-index: 2; width: 26px; height: 26px; left: calc(50% - 13px); top: calc(50% - 13px); border-radius: 50%; border: 3px solid rgba(0, 229, 255, .25); border-top-color: var(--cyan); animation: rot .7s linear infinite; }
+    .imgctl { display: grid; gap: 10px; min-width: 0; }
+    .imgctl small { color: var(--muted); font-size: .76rem; line-height: 1.45; }
+    .keybox { display: grid; gap: 10px; padding: 12px; border-radius: 14px; border: 1px solid rgba(255, 184, 77, .35); background: rgba(255, 184, 77, .06); }
+    .row .ico.thumb { padding: 0; overflow: hidden; background: #fff; }
+    .row .ico.thumb img { width: 100%; height: 100%; object-fit: cover; }
     .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 8px; }
     .icons button { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); background: var(--field); color: var(--muted); cursor: pointer; display: grid; place-items: center; transition: all .2s var(--ease); }
     .icons button svg { width: 22px; height: 22px; }
@@ -162,6 +174,7 @@
 
     @media (max-width: 640px) {
       .g2, .g3 { grid-template-columns: 1fr; }
+      .imgrow { grid-template-columns: 1fr; } .imgprev { max-width: 160px; }
       .row { grid-template-columns: auto 1fr; }
       .row .tools { grid-column: 1 / -1; justify-content: flex-end; border-top: 1px solid var(--line); padding-top: 10px; }
       .top .actions { width: 100%; } .top .actions .btn { flex: 1; }
@@ -230,6 +243,12 @@
         <label class="f"><span>URL</span><input type="url" id="setProd" placeholder="https://…"></label>
       </div>
       <div class="panel">
+        <h3>Subida de imágenes (imgbb)</h3>
+        <p>Para subir imágenes de cursos desde el panel. La key se guarda solo en este navegador; no va en la tarjeta ni en el bin.</p>
+        <div class="idbox"><input type="password" id="setImgbb" placeholder="API key de imgbb" autocomplete="off" spellcheck="false"><button class="btn" id="btnImgbbSave" type="button"><span data-i="save"></span>Guardar</button><button class="btn danger" id="btnImgbbDel" type="button" aria-label="Quitar key"><span data-i="trash"></span></button></div>
+        <div class="btnrow" style="margin-top:10px"><a class="btn sm" href="https://api.imgbb.com/" target="_blank" rel="noopener"><span data-i="external-link"></span>Obtener API key gratis</a></div>
+      </div>
+      <div class="panel">
         <h3>Cifras destacadas</h3>
         <p>Los tres números animados que aparecen bajo el botón.</p>
         <div class="g3" id="statsForm"></div>
@@ -267,6 +286,26 @@
         </div>
         <label class="f"><span>Enlace de compra * <small style="display:inline;text-transform:none;letter-spacing:0">(al pulsar “Adquirir”)</small></span><input type="url" id="fUrl" placeholder="https://go.hotmart.com/…" inputmode="url"><div class="err" id="eUrl" hidden></div></label>
         <label class="f"><span>Descripción</span><textarea id="fDesc" maxlength="300" placeholder="Qué aprenderá la persona…"></textarea></label>
+        <div class="f">
+          <span style="display:block;margin-bottom:8px;font:600 .72rem/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Imagen del curso</span>
+          <div class="imgrow">
+            <div class="imgprev" id="imgPrev" role="button" tabindex="0" aria-label="Subir imagen desde tu equipo" title="Clic o arrastra una imagen"><span data-i="upload" id="imgPh"></span><img id="imgTag" alt="Vista previa" hidden referrerpolicy="no-referrer"></div>
+            <div class="imgctl">
+              <input type="url" id="fImg" placeholder="Pega el enlace de la imagen (Hotmart, imgbb…)" inputmode="url" spellcheck="false">
+              <div class="err" id="eImg" hidden></div>
+              <div class="btnrow">
+                <button type="button" class="btn sm" id="btnUp"><span data-i="upload"></span><span id="upLbl">Subir imagen</span></button>
+                <button type="button" class="btn sm danger" id="btnImgClear"><span data-i="x"></span>Quitar</button>
+              </div>
+              <input type="file" id="fileImg" accept="image/*" hidden>
+              <small id="imgHint">Pega el enlace directo de la imagen (en Hotmart: clic derecho sobre la imagen → <i>Copiar dirección de imagen</i>) o sube un archivo: se reduce y se aloja en imgbb.</small>
+              <div class="keybox" id="keyBox" hidden>
+                <label class="f"><span>API key de imgbb</span><input type="password" id="inImgbb" placeholder="Pega tu API key" autocomplete="off" spellcheck="false"></label>
+                <div class="btnrow"><button type="button" class="btn sm primary" id="btnKeySave"><span data-i="check"></span>Guardar y subir</button><a class="btn sm" href="https://api.imgbb.com/" target="_blank" rel="noopener"><span data-i="external-link"></span>Obtener key gratis</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <label class="f"><span>Etiquetas</span><input type="text" id="fTags" placeholder="Ebook exclusivo, Plan de acción, Plantilla"><small>Separadas por coma. Máximo 4.</small></label>
         <div class="g2">
           <label class="f"><span>Insignia (opcional)</span><input type="text" id="fBadge" maxlength="16" placeholder="NUEVO"></label>
@@ -289,7 +328,7 @@
     /* Opcional: puedes dejar aquí tus datos para no escribirlos cada vez.
        ⚠ Si subes este archivo a internet, cualquiera que lo abra vería la clave.
        Lo recomendado es dejarlos vacíos y usar el formulario de entrada. */
-    var ADMIN_CONFIG = { MASTER_KEY: '', BIN_ID: '' };
+    var ADMIN_CONFIG = { MASTER_KEY: '', BIN_ID: '', IMGBB_KEY: '' };
 
     var G = window.Gabora;
     var $ = function (id) { return document.getElementById(id); };
@@ -316,6 +355,10 @@
       try { localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); (remember ? localStorage : sessionStorage).setItem(KEY_STORE, JSON.stringify({ key: key, bin: bin })); } catch (e) { /* ignorar */ }
     }
     function clearCreds() { try { localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); } catch (e) { /* ignorar */ } }
+
+    var IMG_STORE = 'g646_imgbb_v1';
+    function getImgbbKey() { try { return localStorage.getItem(IMG_STORE) || ADMIN_CONFIG.IMGBB_KEY || ''; } catch (e) { return ADMIN_CONFIG.IMGBB_KEY || ''; } }
+    function setImgbbKey(v) { try { v ? localStorage.setItem(IMG_STORE, v) : localStorage.removeItem(IMG_STORE); } catch (e) { /* sin acceso */ } }
 
     /* ---------- estado ---------- */
     var S = { key: '', bin: '', data: null, saved: '', dirty: false, editing: -1, icon: 'star', busy: false };
@@ -390,7 +433,7 @@
     });
 
     $('btnLogout').addEventListener('click', function () {
-      function out() { clearCreds(); S = { key: '', bin: '', data: null, saved: '', dirty: false, editing: -1, icon: 'star', busy: false }; $('inKey').value = ''; $('inBin').value = ''; $('app').hidden = true; $('login').hidden = false; renderState(); }
+      function out() { clearCreds(); setImgbbKey(''); S = { key: '', bin: '', data: null, saved: '', dirty: false, editing: -1, icon: 'star', busy: false }; $('inKey').value = ''; $('inBin').value = ''; $('app').hidden = true; $('login').hidden = false; renderState(); }
       if (S.dirty) askConfirm('¿Salir sin guardar?', 'Tienes cambios sin guardar que se perderán.', 'Salir', out); else out();
     });
 
@@ -427,7 +470,7 @@
         if (c.insignia) title.appendChild(h('em', { 'class': 'pill badge', text: c.insignia, style: 'font-style:normal' }));
         var link = h('small', { text: c.url || 'Sin enlace de compra', 'class': c.url ? '' : 'nolink' });
         var row = h('div', { 'class': 'row' + (c.activo ? '' : ' off'), style: 'animation-delay:' + Math.min(i, 10) * 35 + 'ms' }, [
-          h('div', { 'class': 'ico', html: IS(c.icono) }),
+          thumbFor(c),
           h('div', { 'class': 'meta' }, [title, link]),
           h('div', { 'class': 'tools' }, [
             sw,
@@ -442,6 +485,14 @@
         if (i === cs.length - 1) row.querySelector('[aria-label=Bajar]').disabled = true;
         list.appendChild(row);
       });
+    }
+    function thumbFor(c) {
+      var ico = h('div', { 'class': 'ico', html: IS(c.icono) });
+      if (c.imagen) {
+        var im = h('img', { src: c.imagen, alt: '', referrerpolicy: 'no-referrer', loading: 'lazy' });
+        im.onload = function () { ico.textContent = ''; ico.classList.add('thumb'); ico.appendChild(im); };
+      }
+      return ico;
     }
     function move(i, d) {
       var a = S.data.cursos, j = i + d; if (j < 0 || j >= a.length) return;
@@ -463,13 +514,14 @@
       });
     }
     function paintIcons() { document.querySelectorAll('#iconGrid button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.n === S.icon ? 'true' : 'false'); }); }
-    function clearErr() { ['fTitulo', 'fUrl'].forEach(function (id) { $(id).classList.remove('bad'); }); ['eTitulo', 'eUrl'].forEach(function (id) { $(id).hidden = true; }); }
+    function clearErr() { ['fTitulo', 'fUrl', 'fImg'].forEach(function (id) { $(id).classList.remove('bad'); }); ['eTitulo', 'eUrl', 'eImg'].forEach(function (id) { $(id).hidden = true; }); }
 
     function openEditor(i) {
       S.editing = i; clearErr(); buildIcons();
       var c = i >= 0 ? S.data.cursos[i] : { titulo: '', precio: '', descripcion: '', url: '', etiquetas: [], insignia: '', icono: 'star', activo: true };
       $('dlgTitle').textContent = i >= 0 ? 'Editar curso' : 'Nuevo curso';
       $('fTitulo').value = c.titulo; $('fPrecio').value = c.precio; $('fUrl').value = c.url; $('fDesc').value = c.descripcion;
+      $('fImg').value = c.imagen || ''; previewNow(); $('keyBox').hidden = true; pendingFile = null;
       $('fTags').value = c.etiquetas.join(', '); $('fBadge').value = c.insignia; $('fActive').checked = c.activo;
       S.icon = c.icono || 'star'; paintIcons();
       if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
@@ -486,17 +538,71 @@
       e.preventDefault(); clearErr();
       var titulo = $('fTitulo').value.trim(), urlRaw = $('fUrl').value.trim(), ok = true;
       if (!titulo) { $('fTitulo').classList.add('bad'); $('eTitulo').textContent = 'El título es obligatorio.'; $('eTitulo').hidden = false; ok = false; }
+      var imgRaw = $('fImg').value.trim(), imgUrl = G.safeUrl(imgRaw);
+      if (imgRaw && !imgUrl) { $('fImg').classList.add('bad'); $('eImg').textContent = 'El enlace de la imagen debe empezar con https:// y no tener espacios.'; $('eImg').hidden = false; ok = false; }
       var url = G.safeUrl(urlRaw);
       if (!urlRaw || !url) { $('fUrl').classList.add('bad'); $('eUrl').textContent = urlRaw ? 'Debe empezar con https:// (o http://) y no tener espacios.' : 'Pega el enlace al que irá el botón “Adquirir”.'; $('eUrl').hidden = false; ok = false; }
       if (!ok) { (document.querySelector('#courseForm .bad') || {}).focus && document.querySelector('#courseForm .bad').focus(); return; }
       var cur = S.editing >= 0 ? S.data.cursos[S.editing] : null;
       var c = G.normalize({ cursos: [{
         id: cur ? cur.id : G.uid(), titulo: titulo, precio: $('fPrecio').value, icono: S.icon, descripcion: $('fDesc').value,
-        etiquetas: $('fTags').value.split(','), url: url, insignia: $('fBadge').value, activo: $('fActive').checked
+        etiquetas: $('fTags').value.split(','), url: url, imagen: imgUrl, insignia: $('fBadge').value, activo: $('fActive').checked
       }] }).cursos[0];
       if (S.editing >= 0) S.data.cursos[S.editing] = c; else S.data.cursos.push(c);
       closeEditor(); markDirty(); renderList(); toast(S.editing >= 0 ? 'Curso actualizado. Recuerda guardar.' : 'Curso agregado. Recuerda guardar.', 'ok');
     });
+
+    /* ---------- imagen del curso: pegar enlace o subir a imgbb ---------- */
+    var pendingFile = null, prevTimer = null;
+    function previewNow() {
+      var img = $('imgTag'), url = G.safeUrl($('fImg').value.trim());
+      img.onload = img.onerror = null;
+      if (!url) { img.hidden = true; img.removeAttribute('src'); $('imgPh').hidden = false; return; }
+      img.onload = function () { img.hidden = false; $('imgPh').hidden = true; };
+      img.onerror = function () { img.hidden = true; $('imgPh').hidden = false; $('eImg').textContent = 'No se pudo cargar esa imagen. Revisa el enlace.'; $('eImg').hidden = false; };
+      $('eImg').hidden = true; img.src = url;
+    }
+    $('fImg').addEventListener('input', function () { $('fImg').classList.remove('bad'); clearTimeout(prevTimer); prevTimer = setTimeout(previewNow, 350); });
+    $('btnImgClear').addEventListener('click', function () { $('fImg').value = ''; previewNow(); });
+
+    function showKeyBox() { $('keyBox').hidden = false; $('inImgbb').value = ''; setTimeout(function () { $('inImgbb').focus(); }, 30); }
+    function pickFile() { var k = getImgbbKey(); if (!k) { showKeyBox(); return; } $('fileImg').click(); }
+    $('btnUp').addEventListener('click', pickFile);
+    $('imgPrev').addEventListener('click', pickFile);
+    $('imgPrev').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickFile(); } });
+    ['dragenter', 'dragover'].forEach(function (n) { $('imgPrev').addEventListener(n, function (e) { e.preventDefault(); $('imgPrev').classList.add('drag'); }); });
+    ['dragleave', 'drop'].forEach(function (n) { $('imgPrev').addEventListener(n, function (e) { e.preventDefault(); $('imgPrev').classList.remove('drag'); }); });
+    $('imgPrev').addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) doUpload(f); });
+    $('fileImg').addEventListener('change', function () { var f = this.files && this.files[0]; this.value = ''; if (f) doUpload(f); });
+
+    $('btnKeySave').addEventListener('click', function () {
+      var v = $('inImgbb').value.trim();
+      if (!/^[A-Za-z0-9]{16,64}$/.test(v)) return toast('Esa API key no parece válida (letras y números, sin espacios).', 'bad');
+      setImgbbKey(v); $('keyBox').hidden = true; $('setImgbb').value = v;
+      if (pendingFile) { var f = pendingFile; pendingFile = null; doUpload(f); } else $('fileImg').click();
+    });
+    function setUp(on) { $('imgPrev').classList.toggle('busy', on); $('btnUp').disabled = on; $('btnImgClear').disabled = on; $('upLbl').textContent = on ? 'Subiendo…' : 'Subir imagen'; }
+    function doUpload(file) {
+      var key = getImgbbKey();
+      if (!key) { pendingFile = file; showKeyBox(); return; }
+      setUp(true);
+      G.uploadImage(key, file).then(function (url) {
+        $('fImg').value = url; $('fImg').classList.remove('bad'); previewNow(); toast('Imagen subida. Pulsa “Aplicar curso” y luego Guardar.', 'ok');
+      }).catch(function (e) {
+        var m = (e && e.message) || 'No se pudo subir la imagen.';
+        if (e && e.status === 400 && /key/i.test(m)) { m = 'La API key de imgbb no es válida.'; pendingFile = null; setImgbbKey(''); showKeyBox(); }
+        else if (e instanceof TypeError) m = 'Sin conexión con imgbb. Revisa tu internet.';
+        toast(m, 'bad');
+      }).then(function () { setUp(false); });
+    }
+    /* ajustes: key de imgbb */
+    $('setImgbb').value = getImgbbKey();
+    $('btnImgbbSave').addEventListener('click', function () {
+      var v = $('setImgbb').value.trim();
+      if (v && !/^[A-Za-z0-9]{16,64}$/.test(v)) return toast('Esa API key no parece válida.', 'bad');
+      setImgbbKey(v); toast(v ? 'API key de imgbb guardada en este navegador.' : 'API key eliminada.', 'ok');
+    });
+    $('btnImgbbDel').addEventListener('click', function () { setImgbbKey(''); $('setImgbb').value = ''; toast('API key eliminada.', 'ok'); });
 
     /* ---------- confirmación ---------- */
     var cfAction = null;

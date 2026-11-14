@@ -97,43 +97,44 @@
         id: 'c1', titulo: 'Camino al Primer Millón', precio: '$47', icono: 'road',
         descripcion: 'Descubre 10 negocios rentables para tu éxito financiero y transforma tus finanzas',
         etiquetas: ['Ebook exclusivo', 'Plan de acción', 'Plantilla financiera'],
-        url: 'https://go.hotmart.com/G102721289A', insignia: '', activo: true
+        url: 'https://go.hotmart.com/G102721289A',
+        imagen: 'https://static-media.hotmart.com/9Yp1hruOvOKAuDrjpI9QLoxYbrI=/300x300/smart/filters:format(webp):background_color(white)/hotmart/product_pictures/de20b4bf-0ed0-4978-bf46-d52b981559a3/CaminoalPrimerMilln1.png?w=920', insignia: '', activo: true
       },
       {
         id: 'c2', titulo: 'Estrategias de Inversión', precio: '$97', icono: 'trending-up',
         descripcion: 'Aprende técnicas avanzadas para multiplicar tu capital con inversiones inteligentes',
         etiquetas: ['Análisis técnico', 'Gestión de riesgo', 'Casos reales'],
-        url: 'https://go.hotmart.com/A102721287E', insignia: '', activo: true
+        url: 'https://go.hotmart.com/A102721287E', imagen: '', insignia: '', activo: true
       },
       {
         id: 'c3', titulo: 'Educación Financiera para Niños', precio: '$37', icono: 'smile',
         descripcion: 'Curso de 7 días para enseñar finanzas a los más pequeños de la casa',
         etiquetas: ['7 módulos diarios', 'Actividades interactivas', 'Guía para padres'],
-        url: 'https://go.hotmart.com/L102721297M', insignia: '', activo: true
+        url: 'https://go.hotmart.com/L102721297M', imagen: '', insignia: '', activo: true
       },
       {
         id: 'c4', titulo: 'Independencia Financiera Mentoring', precio: '$297', icono: 'trophy',
         descripcion: 'Programa completo con mentoría personalizada para alcanzar tu libertad financiera',
         etiquetas: ['Acompañamiento continuo', 'Estrategias probadas', 'Comunidad exclusiva'],
-        url: 'https://go.hotmart.com/F102721278V', insignia: '', activo: true
+        url: 'https://go.hotmart.com/F102721278V', imagen: '', insignia: '', activo: true
       },
       {
         id: 'c5', titulo: 'Finanzas Personales Avanzadas', precio: '$67', icono: 'wallet',
         descripcion: 'Domina el control de tus finanzas personales y multiplica tu patrimonio',
         etiquetas: ['Presupuesto maestro', 'Ahorro inteligente', 'Inversión básica'],
-        url: 'https://go.hotmart.com/P102802168A', insignia: '', activo: true
+        url: 'https://go.hotmart.com/P102802168A', imagen: '', insignia: '', activo: true
       },
       {
         id: 'c6', titulo: 'Trading y Mercados Financieros', precio: '$147', icono: 'bar-chart',
         descripcion: 'Aprende a operar en los mercados como un profesional con estrategias ganadoras',
         etiquetas: ['Trading en vivo', 'Indicadores técnicos', 'Psicología del trader'],
-        url: 'https://go.hotmart.com/X102802160F', insignia: '', activo: true
+        url: 'https://go.hotmart.com/X102802160F', imagen: '', insignia: '', activo: true
       },
       {
         id: 'c7', titulo: 'Finanzas para Niños - Completo', precio: '$57', icono: 'graduation',
         descripcion: 'Programa interactivo completo para enseñar el valor del dinero a tus hijos',
         etiquetas: ['4 módulos completos', '2 bonos incluidos', 'Juegos prácticos'],
-        url: 'https://go.hotmart.com/F102721304V', insignia: '', activo: true
+        url: 'https://go.hotmart.com/F102721304V', imagen: '', insignia: '', activo: true
       }
     ]
   };
@@ -165,6 +166,7 @@
       descripcion: str(c.descripcion, 300),
       etiquetas: tags.map(function (t) { return str(t, 28); }).filter(Boolean).slice(0, 4),
       url: safeUrl(c.url),
+      imagen: safeUrl(c.imagen),
       insignia: str(c.insignia, 16),
       activo: c.activo !== false
     };
@@ -249,6 +251,53 @@
     }, data).then(function (j) { return j && j.metadata && j.metadata.id; });
   }
 
+  /* ---------- Imágenes: redimensionar y subir a imgbb ---------- */
+  function resizeImage(file, maxSide) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var k = Math.min(1, maxSide / Math.max(w, h));
+        var cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(w * k)); cv.height = Math.max(1, Math.round(h * k));
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        cv.toBlob(function (b) { b ? resolve(b) : reject(new Error('No se pudo procesar la imagen.')); }, 'image/webp', 0.9);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('El archivo no es una imagen válida.')); };
+      img.src = url;
+    });
+  }
+
+  /* Sube la imagen (ya reducida a ~1000px) a imgbb y devuelve su URL directa. */
+  function uploadImage(apiKey, file) {
+    if (!file || !/^image\//.test(file.type)) return Promise.reject(new Error('Elige un archivo de imagen (PNG, JPG, WEBP).'));
+    if (file.size > 15 * 1024 * 1024) return Promise.reject(new Error('La imagen pesa más de 15 MB.'));
+    var prep = file.type === 'image/gif' ? Promise.resolve(file) : resizeImage(file, 1000);
+    return prep.then(function (blob) {
+      var fd = new FormData();
+      fd.append('image', blob, 'curso.' + (blob.type === 'image/gif' ? 'gif' : 'webp'));
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 40000);
+      return fetch('https://api.imgbb.com/1/upload?key=' + encodeURIComponent(apiKey), { method: 'POST', body: fd, signal: ctrl.signal })
+        .then(function (res) {
+          return res.json().catch(function () { return null; }).then(function (json) {
+            if (!res.ok || !json || !json.success || !json.data) {
+              var err = new Error((json && json.error && json.error.message) || ('Error HTTP ' + res.status));
+              err.status = res.status; throw err;
+            }
+            return json.data.url || json.data.display_url;
+          });
+        })
+        .catch(function (e) {
+          if (e && e.name === 'AbortError') { var t = new Error('La subida tardó demasiado. Intenta con una imagen más liviana.'); t.code = 'timeout'; throw t; }
+          throw e;
+        })
+        .then(function (v) { clearTimeout(timer); return v; }, function (e) { clearTimeout(timer); throw e; });
+    });
+  }
+
   /* ---------- Caché local (carga instantánea + menos peticiones) ---------- */
   var CACHE_KEY = 'g646_cache_v1';
   var cache = {
@@ -279,6 +328,7 @@
     readPrivate: readPrivate,
     saveBin: saveBin,
     createBin: createBin,
+    uploadImage: uploadImage,
     cache: cache
   };
 })(window);

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#03060c">
+  <title>Panel · Gabora646</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg: #03060c; --cyan: #00e5ff; --cyan-soft: #7df3ff; --blue: #3b6cff; --green: #1de9b6; --pink: #ff3d8b; --amber: #ffb84d;
+      --ink: #eafaff; --muted: #8fa9bb; --line: rgba(0, 229, 255, .16); --panel: rgba(10, 20, 34, .78); --field: rgba(255, 255, 255, .04);
+      --font-display: 'Outfit', 'Segoe UI', system-ui, sans-serif; --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif; --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    html { color-scheme: dark; background: var(--bg); }
+    body { min-height: 100dvh; font: 400 .92rem/1.5 var(--font-body); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; position: relative; overflow-x: hidden; }
+    .bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg i { position: absolute; width: 55vmax; height: 55vmax; border-radius: 50%; filter: blur(80px); opacity: .45; }
+    .bg i:nth-child(1) { background: radial-gradient(circle, rgba(0, 229, 255, .4), transparent 62%); top: -20vmax; left: -15vmax; }
+    .bg i:nth-child(2) { background: radial-gradient(circle, rgba(59, 108, 255, .4), transparent 62%); bottom: -25vmax; right: -18vmax; }
+    .bg::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 229, 255, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, .05) 1px, transparent 1px); background-size: 46px 46px; mask-image: radial-gradient(ellipse at top, #000 10%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at top, #000 10%, transparent 70%); }
+    svg { width: 1em; height: 1em; flex: none; }
+    [hidden] { display: none !important; }
+    button { font: inherit; color: inherit; }
+
+    /* ---------- Botones y campos ---------- */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255, 255, 255, .04); color: var(--ink); cursor: pointer; font: 600 .86rem/1 var(--font-body); text-decoration: none; transition: all .25s var(--ease); white-space: nowrap; }
+    .btn svg { width: 16px; height: 16px; }
+    .btn:hover, .btn:focus-visible { border-color: rgba(0, 229, 255, .55); background: rgba(0, 229, 255, .08); outline: none; transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn.primary { color: #00131a; border: 0; background: linear-gradient(110deg, var(--cyan), #5df7ff 45%, var(--green)); box-shadow: 0 6px 22px rgba(0, 229, 255, .3); }
+    .btn.primary:hover { box-shadow: 0 8px 30px rgba(0, 229, 255, .55); background: linear-gradient(110deg, var(--cyan), #5df7ff 45%, var(--green)); }
+    .btn.danger:hover { border-color: var(--pink); background: rgba(255, 61, 139, .1); color: #ff9cc2; }
+    .btn.sm { padding: 8px 10px; border-radius: 10px; }
+    .ibtn { width: 34px; height: 34px; padding: 0; }
+
+    label.f { display: block; }
+    label.f > span { display: block; margin-bottom: 6px; font: 600 .72rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    label.f > small { display: block; margin-top: 5px; color: var(--muted); font-size: .74rem; }
+    input[type=text], input[type=url], input[type=password], input[type=number], textarea, select {
+      width: 100%; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--line); background: var(--field); color: var(--ink); font: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    textarea { resize: vertical; min-height: 84px; }
+    input:focus, textarea:focus, select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0, 229, 255, .15); }
+    input.bad, textarea.bad { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255, 61, 139, .15); }
+    .err { color: #ff9cc2; font-size: .78rem; margin-top: 5px; }
+
+    /* ---------- Login ---------- */
+    .login { position: relative; z-index: 1; min-height: 100dvh; display: grid; place-items: center; padding: 20px; }
+    .card { position: relative; width: min(100%, 440px); padding: 28px 24px; border-radius: 26px; background: linear-gradient(160deg, rgba(14, 28, 46, .8), var(--panel)); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 0 50px rgba(0, 229, 255, .1); isolation: isolate; }
+    .card::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1; background: conic-gradient(from var(--a), transparent, var(--cyan) 50deg, var(--blue) 110deg, transparent 170deg, transparent 230deg, var(--green) 290deg, transparent 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 7s linear infinite; }
+    @keyframes spin { to { --a: 360deg; } }
+    .login .logo { display: block; height: 76px; margin: 0 auto 10px; filter: drop-shadow(0 0 14px rgba(0, 229, 255, .6)); }
+    .login h1 { text-align: center; font: 700 1.5rem/1.2 var(--font-display); }
+    .login p.sub { text-align: center; color: var(--muted); margin: 6px 0 20px; font-size: .86rem; }
+    .stack { display: grid; gap: 14px; }
+    .chk { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: .84rem; cursor: pointer; }
+    .chk input { width: 17px; height: 17px; accent-color: var(--cyan); }
+    .note { display: flex; gap: 10px; padding: 11px 13px; border-radius: 12px; border: 1px solid rgba(255, 184, 77, .3); background: rgba(255, 184, 77, .07); color: #ffd699; font-size: .78rem; line-height: 1.45; }
+    .note svg { width: 16px; height: 16px; margin-top: 1px; color: var(--amber); }
+    .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; }
+    .or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+    /* ---------- App ---------- */
+    .app { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 16px 90px; }
+    .top { position: sticky; top: 0; z-index: 20; margin: 0 -16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: rgba(3, 6, 12, .78); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+    .top .brand { display: flex; align-items: center; gap: 11px; margin-right: auto; min-width: 0; }
+    .top .brand img { height: 38px; filter: drop-shadow(0 0 8px rgba(0, 229, 255, .6)); }
+    .top .brand b { display: block; font: 700 1.05rem/1.1 var(--font-display); }
+    .top .brand small { color: var(--muted); font-size: .72rem; }
+    .state { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 999px; font: 600 .74rem/1 var(--font-body); border: 1px solid var(--line); color: var(--muted); }
+    .state i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 9px var(--green); }
+    .state.dirty { color: #ffd699; border-color: rgba(255, 184, 77, .4); } .state.dirty i { background: var(--amber); box-shadow: 0 0 9px var(--amber); animation: blink 1.4s infinite; }
+    .state.busy i { background: var(--cyan); box-shadow: 0 0 9px var(--cyan); animation: blink .8s infinite; }
+    @keyframes blink { 50% { opacity: .3; } }
+    .top .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .tabs { display: flex; gap: 4px; margin: 18px 0; padding: 4px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, .03); width: fit-content; max-width: 100%; overflow-x: auto; }
+    .tab { padding: 9px 16px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; font: 600 .84rem/1 var(--font-body); display: inline-flex; gap: 8px; align-items: center; white-space: nowrap; transition: all .25s var(--ease); }
+    .tab svg { width: 15px; height: 15px; }
+    .tab[aria-selected=true] { color: #00131a; background: linear-gradient(110deg, var(--cyan), var(--green)); box-shadow: 0 0 18px rgba(0, 229, 255, .35); }
+    .tab:not([aria-selected=true]):hover { color: var(--ink); background: rgba(255, 255, 255, .05); }
+
+    .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .head h2 { font: 600 1.15rem/1.2 var(--font-display); }
+    .head p { color: var(--muted); font-size: .82rem; }
+
+    .list { display: grid; gap: 10px; }
+    .row { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(155deg, rgba(20, 38, 60, .6), rgba(8, 17, 30, .7)); transition: border-color .25s, transform .3s var(--ease), opacity .3s; }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px); } }
+    .list.intro .row { animation: pop .45s var(--ease) both; }
+    .row:hover { border-color: rgba(0, 229, 255, .45); }
+    .row.off { opacity: .55; }
+    .row .ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: var(--cyan); background: rgba(0, 229, 255, .1); border: 1px solid rgba(0, 229, 255, .28); box-shadow: 0 0 16px rgba(0, 229, 255, .2); }
+    .row .ico svg { width: 22px; height: 22px; filter: drop-shadow(0 0 5px var(--cyan)); }
+    .row .meta { min-width: 0; }
+    .row .meta b { display: flex; align-items: center; gap: 8px; font: 600 .96rem/1.25 var(--font-display); }
+    .row .meta b span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pill { flex: none; font: 700 .72rem/1 var(--font-display); color: #00131a; padding: 4px 8px; border-radius: 99px; background: linear-gradient(135deg, var(--cyan), var(--green)); }
+    .pill.badge { background: var(--pink); color: #fff; letter-spacing: .08em; text-transform: uppercase; font-size: .6rem; }
+    .row .meta small { display: block; color: var(--muted); font-size: .76rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+    .row .meta small.nolink { color: #ff9cc2; }
+    .row .tools { display: flex; gap: 6px; align-items: center; }
+    .sw { position: relative; width: 42px; height: 24px; flex: none; }
+    .sw input { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 1; width: 100%; height: 100%; }
+    .sw span { position: absolute; inset: 0; border-radius: 99px; background: rgba(255, 255, 255, .12); transition: background .25s; }
+    .sw span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .25s var(--ease); }
+    .sw input:checked + span { background: linear-gradient(110deg, var(--cyan), var(--green)); box-shadow: 0 0 14px rgba(0, 229, 255, .5); }
+    .sw input:checked + span::after { transform: translateX(18px); }
+    .sw input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .empty { text-align: center; padding: 44px 20px; border: 1px dashed var(--line); border-radius: 20px; color: var(--muted); }
+    .empty svg { width: 34px; height: 34px; color: var(--cyan); margin-bottom: 10px; }
+
+    .panel { padding: 20px; border-radius: 20px; border: 1px solid var(--line); background: linear-gradient(155deg, rgba(20, 38, 60, .55), rgba(8, 17, 30, .7)); margin-bottom: 14px; }
+    .panel h3 { font: 600 1rem/1.2 var(--font-display); margin-bottom: 4px; }
+    .panel > p { color: var(--muted); font-size: .82rem; margin-bottom: 16px; }
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .statbox { padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, .025); display: grid; gap: 10px; }
+    .statbox .two { display: grid; grid-template-columns: 1fr 70px; gap: 8px; }
+    .idbox { display: flex; gap: 8px; align-items: center; }
+    .idbox code { flex: 1; min-width: 0; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0, 0, 0, .3); color: var(--cyan-soft); font: 500 .82rem ui-monospace, Menlo, Consolas, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* ---------- Modal ---------- */
+    dialog { margin: auto; border: 0; padding: 0; background: transparent; color: var(--ink); max-width: 100vw; max-height: 100dvh; }
+    dialog::backdrop { background: rgba(2, 5, 10, .72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .modal { width: min(94vw, 640px); max-height: 92dvh; display: flex; flex-direction: column; border-radius: 24px; border: 1px solid var(--line); background: linear-gradient(160deg, #0d1c2f, #070f1b); box-shadow: 0 30px 90px rgba(0, 0, 0, .7), 0 0 50px rgba(0, 229, 255, .12); animation: modalIn .4s var(--ease); }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(16px) scale(.98); } }
+    .modal header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+    .modal header h3 { font: 600 1.1rem/1 var(--font-display); }
+    .modal .body { padding: 18px 20px; overflow: auto; display: grid; gap: 14px; }
+    .modal footer { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); }
+    .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 8px; }
+    .icons button { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); background: var(--field); color: var(--muted); cursor: pointer; display: grid; place-items: center; transition: all .2s var(--ease); }
+    .icons button svg { width: 22px; height: 22px; }
+    .icons button:hover { color: var(--cyan); border-color: rgba(0, 229, 255, .5); transform: translateY(-2px); }
+    .icons button[aria-pressed=true] { color: #00131a; background: linear-gradient(135deg, var(--cyan), var(--green)); border-color: transparent; box-shadow: 0 0 18px rgba(0, 229, 255, .5); }
+    .confirm { width: min(92vw, 400px); padding: 24px; border-radius: 22px; border: 1px solid var(--line); background: linear-gradient(160deg, #0d1c2f, #070f1b); box-shadow: 0 30px 90px rgba(0, 0, 0, .7); text-align: center; animation: modalIn .35s var(--ease); }
+    .confirm svg.big { width: 34px; height: 34px; color: var(--pink); margin-bottom: 8px; }
+    .confirm h3 { font: 600 1.1rem/1.3 var(--font-display); margin-bottom: 6px; }
+    .confirm p { color: var(--muted); font-size: .86rem; margin-bottom: 18px; }
+    .confirm .btnrow { justify-content: center; }
+
+    /* ---------- Avisos ---------- */
+    .toasts { position: fixed; z-index: 100; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: grid; gap: 8px; width: min(92vw, 420px); pointer-events: none; }
+    .toast { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(8, 18, 32, .96); box-shadow: 0 14px 40px rgba(0, 0, 0, .55); font-size: .86rem; animation: toastIn .4s var(--ease); pointer-events: auto; }
+    .toast svg { width: 18px; height: 18px; margin-top: 1px; }
+    .toast.ok { border-color: rgba(29, 233, 182, .5); } .toast.ok svg { color: var(--green); }
+    .toast.bad { border-color: rgba(255, 61, 139, .55); } .toast.bad svg { color: var(--pink); }
+    .toast.out { opacity: 0; transform: translateY(8px); transition: all .35s; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+
+    .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(0, 19, 26, .25); border-top-color: #00131a; animation: rot .7s linear infinite; }
+    @keyframes rot { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .g2, .g3 { grid-template-columns: 1fr; }
+      .row { grid-template-columns: auto 1fr; }
+      .row .tools { grid-column: 1 / -1; justify-content: flex-end; border-top: 1px solid var(--line); padding-top: 10px; }
+      .top .actions { width: 100%; } .top .actions .btn { flex: 1; }
+      .top .actions .btn span.lbl { display: none; } .top .actions .btn.primary span.lbl { display: inline; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><i></i><i></i></div>
+
+  <!-- ================= LOGIN ================= -->
+  <section class="login" id="login">
+    <form class="card stack" id="loginForm" autocomplete="off" novalidate>
+      <div>
+        <img class="logo" src="assets/logo.png" alt="Gabora646">
+        <h1>Panel de cursos</h1>
+        <p class="sub">Conecta tu cuenta de JSONBin para gestionar la tarjeta.</p>
+      </div>
+      <label class="f"><span>Master Key de JSONBin</span>
+        <input type="password" id="inKey" placeholder="$2a$10$…" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="f"><span>ID del bin</span>
+        <input type="text" id="inBin" placeholder="Ej: 66f1a2b3ad19ca34f8c1d2e3" autocomplete="off" spellcheck="false">
+        <small>Si todavía no tienes bin, déjalo vacío y pulsa “Crear bin automáticamente”.</small>
+      </label>
+      <label class="chk"><input type="checkbox" id="inRemember" checked> Recordar en este dispositivo</label>
+      <div class="err" id="loginErr" hidden></div>
+      <button class="btn primary" type="submit" id="btnLogin"><span data-i="lock"></span>Entrar al panel</button>
+      <div class="or">o</div>
+      <button class="btn" type="button" id="btnCreate"><span data-i="plus"></span>Crear bin automáticamente</button>
+      <div class="note"><span data-i="alert"></span><span>Tu Master Key solo se guarda en este navegador y nunca va dentro de <b>index.html</b>. Usa este panel desde tu propio dispositivo.</span></div>
+    </form>
+  </section>
+
+  <!-- ================= APP ================= -->
+  <div class="app" id="app" hidden>
+    <header class="top">
+      <div class="brand"><img src="assets/logo.png" alt=""><div><b>Panel Gabora646</b><small id="binLabel"></small></div></div>
+      <span class="state" id="state"><i></i><span id="stateTxt">Todo guardado</span></span>
+      <div class="actions">
+        <a class="btn" href="index.html" target="_blank" rel="noopener"><span data-i="eye"></span><span class="lbl">Ver tarjeta</span></a>
+        <button class="btn" id="btnLogout" type="button"><span data-i="log-out"></span><span class="lbl">Salir</span></button>
+        <button class="btn primary" id="btnSave" type="button"><span data-i="save"></span><span class="lbl">Guardar cambios</span></button>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="cursos" aria-selected="true"><span data-i="graduation"></span>Cursos</button>
+      <button class="tab" role="tab" data-tab="ajustes" aria-selected="false"><span data-i="sliders"></span>Ajustes</button>
+      <button class="tab" role="tab" data-tab="datos" aria-selected="false"><span data-i="package"></span>Datos</button>
+    </nav>
+
+    <section id="tab-cursos">
+      <div class="head">
+        <div><h2>Cursos publicados</h2><p id="countTxt"></p></div>
+        <button class="btn primary" id="btnNew" type="button"><span data-i="plus"></span>Nuevo curso</button>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <section id="tab-ajustes" hidden>
+      <div class="panel">
+        <h3>Botón “Productos Digitales”</h3>
+        <p>Enlace al que va el botón principal de la tarjeta (catálogo de WhatsApp, tienda, etc.).</p>
+        <label class="f"><span>URL</span><input type="url" id="setProd" placeholder="https://…"></label>
+      </div>
+      <div class="panel">
+        <h3>Cifras destacadas</h3>
+        <p>Los tres números animados que aparecen bajo el botón.</p>
+        <div class="g3" id="statsForm"></div>
+      </div>
+    </section>
+
+    <section id="tab-datos" hidden>
+      <div class="panel">
+        <h3>Conexión con JSONBin</h3>
+        <p>Pega este ID en <b>index.html</b>, en <code>BIN_ID</code>, para que la tarjeta lea tus cursos.</p>
+        <div class="idbox"><code id="idShow"></code><button class="btn" id="btnCopyId" type="button"><span data-i="copy"></span>Copiar ID</button></div>
+        <div class="btnrow" style="margin-top:12px"><button class="btn" id="btnReload" type="button"><span data-i="refresh"></span>Recargar desde JSONBin</button></div>
+      </div>
+      <div class="panel">
+        <h3>Copia de seguridad</h3>
+        <p>Descarga o restaura todos tus datos como archivo JSON (mismo formato que <b>bin-inicial.json</b>).</p>
+        <div class="btnrow">
+          <button class="btn" id="btnExport" type="button"><span data-i="download"></span>Exportar JSON</button>
+          <button class="btn" id="btnImport" type="button"><span data-i="upload"></span>Importar JSON</button>
+          <button class="btn danger" id="btnDefaults" type="button"><span data-i="refresh"></span>Restaurar cursos originales</button>
+          <input type="file" id="fileImport" accept="application/json,.json" hidden>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= MODAL CURSO ================= -->
+  <dialog id="dlg">
+    <form class="modal" id="courseForm" novalidate>
+      <header><h3 id="dlgTitle">Nuevo curso</h3><button class="btn ibtn" type="button" id="dlgX" aria-label="Cerrar"><span data-i="x"></span></button></header>
+      <div class="body">
+        <div class="g2">
+          <label class="f"><span>Título *</span><input type="text" id="fTitulo" maxlength="90" placeholder="Nombre del curso"><div class="err" id="eTitulo" hidden></div></label>
+          <label class="f"><span>Precio</span><input type="text" id="fPrecio" maxlength="18" placeholder="$47"></label>
+        </div>
+        <label class="f"><span>Enlace de compra * <small style="display:inline;text-transform:none;letter-spacing:0">(al pulsar “Adquirir”)</small></span><input type="url" id="fUrl" placeholder="https://go.hotmart.com/…" inputmode="url"><div class="err" id="eUrl" hidden></div></label>
+        <label class="f"><span>Descripción</span><textarea id="fDesc" maxlength="300" placeholder="Qué aprenderá la persona…"></textarea></label>
+        <label class="f"><span>Etiquetas</span><input type="text" id="fTags" placeholder="Ebook exclusivo, Plan de acción, Plantilla"><small>Separadas por coma. Máximo 4.</small></label>
+        <div class="g2">
+          <label class="f"><span>Insignia (opcional)</span><input type="text" id="fBadge" maxlength="16" placeholder="NUEVO"></label>
+          <div class="f"><span style="display:block;margin-bottom:6px;font:600 .72rem/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Estado</span><label class="chk" style="padding-top:8px"><span class="sw"><input type="checkbox" id="fActive" checked><span></span></span> Visible en la tarjeta</label></div>
+        </div>
+        <div class="f"><span style="display:block;margin-bottom:8px;font:600 .72rem/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Icono</span><div class="icons" id="iconGrid"></div></div>
+      </div>
+      <footer><button class="btn" type="button" id="dlgCancel">Cancelar</button><button class="btn primary" type="submit"><span data-i="check"></span>Aplicar curso</button></footer>
+    </form>
+  </dialog>
+
+  <dialog id="dlgConfirm"><div class="confirm"><span data-i="alert" class="big-w"></span><h3 id="cfTitle"></h3><p id="cfText"></p><div class="btnrow"><button class="btn" id="cfNo" type="button">Cancelar</button><button class="btn danger" id="cfYes" type="button">Confirmar</button></div></div></dialog>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="assets/shared.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    /* Opcional: puedes dejar aquí tus datos para no escribirlos cada vez.
+       ⚠ Si subes este archivo a internet, cualquiera que lo abra vería la clave.
+       Lo recomendado es dejarlos vacíos y usar el formulario de entrada. */
+    var ADMIN_CONFIG = { MASTER_KEY: '', BIN_ID: '' };
+
+    var G = window.Gabora;
+    var $ = function (id) { return document.getElementById(id); };
+    function h(tag, attrs, kids) {
+      var el = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function (k) { if (k === 'text') el.textContent = attrs[k]; else if (k === 'html') el.innerHTML = attrs[k]; else el.setAttribute(k, attrs[k]); });
+      (kids || []).forEach(function (c) { if (c) el.appendChild(c); });
+      return el;
+    }
+    document.querySelectorAll('[data-i]').forEach(function (el) { el.style.display = 'contents'; el.innerHTML = G.icon(el.getAttribute('data-i')); });
+    var IS = function (n) { return G.icon(n); };
+
+    /* ---------- almacenamiento de credenciales ---------- */
+    var KEY_STORE = 'g646_admin_v1';
+    function loadCreds() {
+      var c = { key: ADMIN_CONFIG.MASTER_KEY, bin: ADMIN_CONFIG.BIN_ID, remember: true };
+      try {
+        var raw = localStorage.getItem(KEY_STORE) || sessionStorage.getItem(KEY_STORE);
+        if (raw) { var o = JSON.parse(raw); c.key = o.key || c.key; c.bin = o.bin || c.bin; }
+      } catch (e) { /* sin acceso */ }
+      return c;
+    }
+    function saveCreds(key, bin, remember) {
+      try { localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); (remember ? localStorage : sessionStorage).setItem(KEY_STORE, JSON.stringify({ key: key, bin: bin })); } catch (e) { /* ignorar */ }
+    }
+    function clearCreds() { try { localStorage.removeItem(KEY_STORE); sessionStorage.removeItem(KEY_STORE); } catch (e) { /* ignorar */ } }
+
+    /* ---------- estado ---------- */
+    var S = { key: '', bin: '', data: null, saved: '', dirty: false, editing: -1, icon: 'star', busy: false };
+
+    function toast(msg, kind) {
+      var t = h('div', { 'class': 'toast ' + (kind || 'ok'), role: 'status' }, [h('i', { html: IS(kind === 'bad' ? 'alert' : 'check'), style: 'display:contents' }), h('span', { text: msg })]);
+      $('toasts').appendChild(t);
+      setTimeout(function () { t.classList.add('out'); setTimeout(function () { t.remove(); }, 380); }, kind === 'bad' ? 6000 : 3200);
+    }
+    function niceError(e) {
+      if (!e) return 'Error desconocido.';
+      if (e.status === 401 || e.status === 403) return 'La Master Key no es válida o no tiene permiso.';
+      if (e.status === 404) return 'No se encontró ese bin. Revisa el ID.';
+      if (e.status === 422) return 'JSONBin rechazó los datos (422). ' + (e.message || '');
+      if (e.status === 429) return 'Demasiadas peticiones a JSONBin. Espera un momento.';
+      if (e.code === 'timeout') return e.message;
+      if (e instanceof TypeError) return 'Sin conexión con JSONBin. Revisa tu internet.';
+      return e.message || 'Error al conectar con JSONBin.';
+    }
+    function setBusy(on) {
+      S.busy = on;
+      ['btnSave', 'btnLogin', 'btnCreate', 'btnReload'].forEach(function (id) { if ($(id)) $(id).disabled = on; });
+    }
+
+    /* ---------- dirty ---------- */
+    function snapshot() { return JSON.stringify(G.normalize(S.data)); }
+    function markDirty() { S.dirty = snapshot() !== S.saved; renderState(); }
+    function renderState() {
+      var el = $('state');
+      el.className = 'state' + (S.busy ? ' busy' : S.dirty ? ' dirty' : '');
+      $('stateTxt').textContent = S.busy ? 'Sincronizando…' : S.dirty ? 'Cambios sin guardar' : 'Todo guardado';
+    }
+    window.addEventListener('beforeunload', function (e) { if (S.dirty) { e.preventDefault(); e.returnValue = ''; } });
+    document.addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && !$('app').hidden) { e.preventDefault(); save(); } });
+
+    /* ---------- login ---------- */
+    var cr = loadCreds();
+    $('inKey').value = cr.key || ''; $('inBin').value = cr.bin || '';
+    function loginErr(msg) { var e = $('loginErr'); e.hidden = !msg; e.textContent = msg || ''; }
+
+    function enter(record) {
+      S.data = G.normalize(record && typeof record === 'object' && Object.keys(record).length ? record : G.DEFAULT_DATA);
+      S.saved = snapshot(); S.dirty = false;
+      $('login').hidden = true; $('app').hidden = false;
+      $('binLabel').textContent = 'Bin ' + S.bin.slice(0, 6) + '…' + S.bin.slice(-4);
+      $('idShow').textContent = S.bin;
+      renderAll();
+    }
+
+    $('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault(); loginErr('');
+      var key = $('inKey').value.trim(), bin = $('inBin').value.trim();
+      if (!key) return loginErr('Escribe tu Master Key de JSONBin.');
+      if (!G.isConfigured(bin)) return loginErr('El ID del bin no parece válido. Cópialo desde jsonbin.io o crea uno nuevo con el botón de abajo.');
+      setBusy(true);
+      G.readPrivate(bin, key).then(function (rec) {
+        S.key = key; S.bin = bin; saveCreds(key, bin, $('inRemember').checked); setBusy(false); enter(rec);
+      }).catch(function (err) { setBusy(false); loginErr(niceError(err)); });
+    });
+
+    $('btnCreate').addEventListener('click', function () {
+      loginErr('');
+      var key = $('inKey').value.trim();
+      if (!key) return loginErr('Primero escribe tu Master Key para poder crear el bin.');
+      setBusy(true);
+      G.createBin(key, G.clone(G.DEFAULT_DATA), 'gabora646-cursos').then(function (id) {
+        if (!id) throw new Error('JSONBin no devolvió el ID del bin.');
+        S.key = key; S.bin = id; $('inBin').value = id; saveCreds(key, id, $('inRemember').checked); setBusy(false);
+        enter(G.clone(G.DEFAULT_DATA));
+        toast('Bin creado. Copia su ID en la pestaña Datos.', 'ok'); switchTab('datos');
+      }).catch(function (err) { setBusy(false); loginErr(niceError(err)); });
+    });
+
+    $('btnLogout').addEventListener('click', function () {
+      function out() { clearCreds(); S = { key: '', bin: '', data: null, saved: '', dirty: false, editing: -1, icon: 'star', busy: false }; $('inKey').value = ''; $('inBin').value = ''; $('app').hidden = true; $('login').hidden = false; renderState(); }
+      if (S.dirty) askConfirm('¿Salir sin guardar?', 'Tienes cambios sin guardar que se perderán.', 'Salir', out); else out();
+    });
+
+    /* ---------- pestañas ---------- */
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(function (t) { t.setAttribute('aria-selected', t.dataset.tab === name ? 'true' : 'false'); });
+      ['cursos', 'ajustes', 'datos'].forEach(function (n) { $('tab-' + n).hidden = n !== name; });
+    }
+    document.querySelectorAll('.tab').forEach(function (t) { t.addEventListener('click', function () { switchTab(t.dataset.tab); }); });
+
+    /* ---------- lista de cursos ---------- */
+    var firstPaint = true;
+    function renderAll() { firstPaint = true; renderList(); renderSettings(); renderState(); }
+
+    function mini(icon, label, fn, cls) {
+      var b = h('button', { 'class': 'btn sm ibtn ' + (cls || ''), type: 'button', 'aria-label': label, title: label, html: IS(icon) });
+      b.addEventListener('click', fn); return b;
+    }
+    function renderList() {
+      var list = $('list'); list.textContent = '';
+      list.classList.toggle('intro', firstPaint); firstPaint = false;
+      var cs = S.data.cursos, act = cs.filter(function (c) { return c.activo; }).length;
+      $('countTxt').textContent = cs.length ? (cs.length + (cs.length === 1 ? ' curso' : ' cursos') + ' · ' + act + ' visibles en la tarjeta') : 'Aún no hay cursos.';
+      if (!cs.length) {
+        list.appendChild(h('div', { 'class': 'empty' }, [h('div', { html: IS('rocket') }), h('p', { text: 'Agrega tu primer curso con el botón “Nuevo curso”.' })]));
+        return;
+      }
+      cs.forEach(function (c, i) {
+        var sw = h('label', { 'class': 'sw', title: c.activo ? 'Visible' : 'Oculto' }, [h('input', { type: 'checkbox', 'aria-label': 'Mostrar ' + c.titulo }), h('span')]);
+        var cb = sw.firstChild; cb.checked = c.activo;
+        cb.addEventListener('change', function () { c.activo = cb.checked; markDirty(); renderList(); });
+        var title = h('b', null, [h('span', { text: c.titulo })]);
+        if (c.precio) title.appendChild(h('em', { 'class': 'pill', text: c.precio, style: 'font-style:normal' }));
+        if (c.insignia) title.appendChild(h('em', { 'class': 'pill badge', text: c.insignia, style: 'font-style:normal' }));
+        var link = h('small', { text: c.url || 'Sin enlace de compra', 'class': c.url ? '' : 'nolink' });
+        var row = h('div', { 'class': 'row' + (c.activo ? '' : ' off'), style: 'animation-delay:' + Math.min(i, 10) * 35 + 'ms' }, [
+          h('div', { 'class': 'ico', html: IS(c.icono) }),
+          h('div', { 'class': 'meta' }, [title, link]),
+          h('div', { 'class': 'tools' }, [
+            sw,
+            mini('arrow-up', 'Subir', function () { move(i, -1); }),
+            mini('arrow-down', 'Bajar', function () { move(i, 1); }),
+            mini('copy', 'Duplicar', function () { dup(i); }),
+            mini('pencil', 'Editar', function () { openEditor(i); }),
+            mini('trash', 'Eliminar', function () { askConfirm('¿Eliminar este curso?', '“' + c.titulo + '” se quitará de la lista. Podrás cancelarlo no guardando los cambios.', 'Eliminar', function () { S.data.cursos.splice(i, 1); markDirty(); renderList(); toast('Curso eliminado (sin guardar aún).', 'ok'); }); }, 'danger')
+          ])
+        ]);
+        if (i === 0) row.querySelector('[aria-label=Subir]').disabled = true;
+        if (i === cs.length - 1) row.querySelector('[aria-label=Bajar]').disabled = true;
+        list.appendChild(row);
+      });
+    }
+    function move(i, d) {
+      var a = S.data.cursos, j = i + d; if (j < 0 || j >= a.length) return;
+      var t = a[i]; a[i] = a[j]; a[j] = t; markDirty(); renderList();
+    }
+    function dup(i) {
+      var c = G.clone(S.data.cursos[i]); c.id = G.uid(); c.titulo = (c.titulo + ' (copia)').slice(0, 90);
+      S.data.cursos.splice(i + 1, 0, c); markDirty(); renderList(); toast('Curso duplicado.', 'ok');
+    }
+
+    /* ---------- editor de curso ---------- */
+    var dlg = $('dlg');
+    function buildIcons() {
+      var g = $('iconGrid'); g.textContent = '';
+      G.COURSE_ICONS.forEach(function (n) {
+        var b = h('button', { type: 'button', 'aria-label': 'Icono ' + n, 'aria-pressed': 'false', html: IS(n) });
+        b.addEventListener('click', function () { S.icon = n; paintIcons(); });
+        b.dataset.n = n; g.appendChild(b);
+      });
+    }
+    function paintIcons() { document.querySelectorAll('#iconGrid button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.n === S.icon ? 'true' : 'false'); }); }
+    function clearErr() { ['fTitulo', 'fUrl'].forEach(function (id) { $(id).classList.remove('bad'); }); ['eTitulo', 'eUrl'].forEach(function (id) { $(id).hidden = true; }); }
+
+    function openEditor(i) {
+      S.editing = i; clearErr(); buildIcons();
+      var c = i >= 0 ? S.data.cursos[i] : { titulo: '', precio: '', descripcion: '', url: '', etiquetas: [], insignia: '', icono: 'star', activo: true };
+      $('dlgTitle').textContent = i >= 0 ? 'Editar curso' : 'Nuevo curso';
+      $('fTitulo').value = c.titulo; $('fPrecio').value = c.precio; $('fUrl').value = c.url; $('fDesc').value = c.descripcion;
+      $('fTags').value = c.etiquetas.join(', '); $('fBadge').value = c.insignia; $('fActive').checked = c.activo;
+      S.icon = c.icono || 'star'; paintIcons();
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+      setTimeout(function () { $('fTitulo').focus(); }, 50);
+    }
+    function closeEditor() { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+    $('fTitulo').addEventListener('input', function () { $('fTitulo').classList.remove('bad'); $('eTitulo').hidden = true; });
+    $('fUrl').addEventListener('input', function () { $('fUrl').classList.remove('bad'); $('eUrl').hidden = true; });
+    $('btnNew').addEventListener('click', function () { openEditor(-1); });
+    $('dlgX').addEventListener('click', closeEditor); $('dlgCancel').addEventListener('click', closeEditor);
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) closeEditor(); });
+
+    $('courseForm').addEventListener('submit', function (e) {
+      e.preventDefault(); clearErr();
+      var titulo = $('fTitulo').value.trim(), urlRaw = $('fUrl').value.trim(), ok = true;
+      if (!titulo) { $('fTitulo').classList.add('bad'); $('eTitulo').textContent = 'El título es obligatorio.'; $('eTitulo').hidden = false; ok = false; }
+      var url = G.safeUrl(urlRaw);
+      if (!urlRaw || !url) { $('fUrl').classList.add('bad'); $('eUrl').textContent = urlRaw ? 'Debe empezar con https:// (o http://) y no tener espacios.' : 'Pega el enlace al que irá el botón “Adquirir”.'; $('eUrl').hidden = false; ok = false; }
+      if (!ok) { (document.querySelector('#courseForm .bad') || {}).focus && document.querySelector('#courseForm .bad').focus(); return; }
+      var cur = S.editing >= 0 ? S.data.cursos[S.editing] : null;
+      var c = G.normalize({ cursos: [{
+        id: cur ? cur.id : G.uid(), titulo: titulo, precio: $('fPrecio').value, icono: S.icon, descripcion: $('fDesc').value,
+        etiquetas: $('fTags').value.split(','), url: url, insignia: $('fBadge').value, activo: $('fActive').checked
+      }] }).cursos[0];
+      if (S.editing >= 0) S.data.cursos[S.editing] = c; else S.data.cursos.push(c);
+      closeEditor(); markDirty(); renderList(); toast(S.editing >= 0 ? 'Curso actualizado. Recuerda guardar.' : 'Curso agregado. Recuerda guardar.', 'ok');
+    });
+
+    /* ---------- confirmación ---------- */
+    var cfAction = null;
+    function askConfirm(title, text, yes, fn) {
+      $('cfTitle').textContent = title; $('cfText').textContent = text; $('cfYes').textContent = yes || 'Confirmar'; cfAction = fn;
+      var d = $('dlgConfirm'); if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+    }
+    function cfClose() { var d = $('dlgConfirm'); if (d.close) d.close(); else d.removeAttribute('open'); }
+    $('cfNo').addEventListener('click', function () { cfAction = null; cfClose(); });
+    $('cfYes').addEventListener('click', function () { var f = cfAction; cfAction = null; cfClose(); if (f) f(); });
+    document.querySelectorAll('.big-w').forEach(function (el) { el.firstChild.setAttribute('class', 'big'); });
+
+    /* ---------- ajustes ---------- */
+    function renderSettings() {
+      $('setProd').value = S.data.ajustes.productosUrl;
+      var box = $('statsForm'); box.textContent = '';
+      S.data.ajustes.stats.forEach(function (s, i) {
+        var val = h('input', { type: 'number', min: '0', step: '1', 'aria-label': 'Valor ' + (i + 1) }); val.value = s.valor;
+        var suf = h('input', { type: 'text', maxlength: '4', placeholder: '%', 'aria-label': 'Sufijo ' + (i + 1) }); suf.value = s.sufijo;
+        var lab = h('input', { type: 'text', maxlength: '24', 'aria-label': 'Etiqueta ' + (i + 1) }); lab.value = s.etiqueta;
+        val.addEventListener('input', function () { s.valor = Math.max(0, Number(val.value) || 0); markDirty(); });
+        suf.addEventListener('input', function () { s.sufijo = suf.value.slice(0, 4); markDirty(); });
+        lab.addEventListener('input', function () { s.etiqueta = lab.value.slice(0, 24); markDirty(); });
+        box.appendChild(h('div', { 'class': 'statbox' }, [
+          h('label', { 'class': 'f' }, [h('span', { text: 'Cifra ' + (i + 1) }), h('div', { 'class': 'two' }, [val, suf])]),
+          h('label', { 'class': 'f' }, [h('span', { text: 'Etiqueta' }), lab])
+        ]));
+      });
+    }
+    $('setProd').addEventListener('input', function () {
+      var v = $('setProd').value.trim(), ok = !v || !!G.safeUrl(v);
+      $('setProd').classList.toggle('bad', !ok);
+      if (ok && v) { S.data.ajustes.productosUrl = v; markDirty(); }
+    });
+
+    /* ---------- guardar ---------- */
+    function save() {
+      if (S.busy || !S.data) return;
+      var pu = $('setProd').value.trim();
+      if (pu && !G.safeUrl(pu)) { switchTab('ajustes'); $('setProd').focus(); return toast('La URL de “Productos Digitales” no es válida.', 'bad'); }
+      var clean = G.normalize(S.data);
+      setBusy(true); renderState();
+      G.saveBin(S.bin, S.key, clean).then(function () {
+        S.data = clean; S.saved = JSON.stringify(clean); S.dirty = false; G.cache.set(clean);
+        setBusy(false); renderAll(); toast('Guardado en JSONBin. La tarjeta ya muestra los cambios.', 'ok');
+      }).catch(function (err) { setBusy(false); renderState(); toast(niceError(err), 'bad'); });
+    }
+    $('btnSave').addEventListener('click', save);
+
+    /* ---------- datos ---------- */
+    $('btnCopyId').addEventListener('click', function () {
+      var done = function () { toast('ID copiado.', 'ok'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(S.bin).then(done, function () { toast('No se pudo copiar. Selecciónalo a mano.', 'bad'); });
+      else { var r = document.createRange(); r.selectNodeContents($('idShow')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selecciona y copia el ID.', 'ok'); }
+    });
+    $('btnReload').addEventListener('click', function () {
+      function run() {
+        setBusy(true); renderState();
+        G.readPrivate(S.bin, S.key).then(function (rec) { S.data = G.normalize(rec); S.saved = snapshot(); S.dirty = false; setBusy(false); renderAll(); toast('Datos recargados desde JSONBin.', 'ok'); })
+          .catch(function (err) { setBusy(false); renderState(); toast(niceError(err), 'bad'); });
+      }
+      if (S.dirty) askConfirm('¿Recargar desde JSONBin?', 'Se descartarán tus cambios sin guardar.', 'Recargar', run); else run();
+    });
+    $('btnExport').addEventListener('click', function () {
+      var blob = new Blob([JSON.stringify(G.normalize(S.data), null, 2)], { type: 'application/json' });
+      var a = h('a', { href: URL.createObjectURL(blob), download: 'gabora646-cursos-' + new Date().toISOString().slice(0, 10) + '.json' });
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    });
+    $('btnImport').addEventListener('click', function () { $('fileImport').click(); });
+    $('fileImport').addEventListener('change', function () {
+      var f = this.files && this.files[0]; this.value = ''; if (!f) return;
+      if (f.size > 1024 * 1024) return toast('El archivo es demasiado grande.', 'bad');
+      var rd = new FileReader();
+      rd.onload = function () {
+        try {
+          var o = JSON.parse(rd.result);
+          if (!o || !Array.isArray(o.cursos)) throw new Error('No tiene la lista “cursos”.');
+          S.data = G.normalize(o); markDirty(); renderAll(); toast('Importado. Revisa y pulsa Guardar.', 'ok');
+        } catch (err) { toast('JSON inválido: ' + err.message, 'bad'); }
+      };
+      rd.readAsText(f);
+    });
+    $('btnDefaults').addEventListener('click', function () {
+      askConfirm('¿Restaurar los cursos originales?', 'Reemplaza la lista actual por los 7 cursos de tu tarjeta original (sin guardar todavía).', 'Restaurar', function () { S.data = G.normalize(G.clone(G.DEFAULT_DATA)); markDirty(); renderAll(); toast('Restaurado. Pulsa Guardar para aplicarlo.', 'ok'); });
+    });
+
+    renderState();
+  })();
+  </script>
+</body>
+</html>
